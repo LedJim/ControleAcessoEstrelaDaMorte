@@ -50,7 +50,7 @@ namespace ConroleAcesso.Forms
                 _pilotoViajando = await pilotoDao.PilotoEstaViajando(_idPiloto);
 
                 if(idPilotoComandante.HasValue)
-                    _pilotoComandante = await pilotoDao.ObterPorId(idPilotoComandante.Value);
+                   _pilotoComandante = await pilotoDao.ObterPorId(idPilotoComandante.Value);
             }
 
             lvAlertas.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -80,15 +80,15 @@ namespace ConroleAcesso.Forms
 
         private void PreencherDadosNave()
         {
-            lblNomeNave.Text = _nave.Nome;
+            lblNomeNave.Text = _nave.Nombre;
             lblModelo.Text = _nave.Modelo;
-            lblClasse.Text = _nave.Classe;
+            lblClasse.Text = _nave.Clase;
         }
 
         private void PreencherDadosPiloto()
         {
             lblNomePiloto.Text = _piloto.Nome;
-            lblAnoNacimento.Text = _piloto.AnoNascimento;
+            lblAnoNacimento.Text = _piloto.AnoNacimiento;
             lblPlaneta.Text = _piloto.Planeta.Nome;
         }
 

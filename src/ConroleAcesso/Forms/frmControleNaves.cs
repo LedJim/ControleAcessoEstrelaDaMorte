@@ -80,7 +80,7 @@ namespace ConroleAcesso.Forms
 
             var naves = await _naveDao.ObterPorNomeLike(txtNomeNave.Text);
             foreach (var nave in naves)
-                dgvNaves.Rows.Add(nave.IdNave, false, nave.Nome);
+                dgvNaves.Rows.Add(nave.IdNave, false, nave.Nombre);
 
             dgvNaves.PerformLayout();
             Cursor = Cursors.Default;

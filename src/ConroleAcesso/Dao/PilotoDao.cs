@@ -15,8 +15,8 @@ namespace ConroleAcesso.Dao
                 return;
 
             var check = "if (not exists(select 1 from Pilotos where IdPiloto = {0}))\n";
-            var insert = "insert Pilotos (IdPiloto, Nome, AnoNascimento, IdPlaneta) values({0}, '{1}', '{2}', {3});\n";
-            var comandos = pilotos.Select(piloto => string.Format(check, piloto.IdPiloto) + string.Format(insert, piloto.IdPiloto, piloto.Nome, piloto.AnoNascimento, piloto.IdPlaneta));
+            var insert = "insert Pilotos (IdPiloto, Nome, AnoNacimiento, IdPlaneta) values({0}, '{1}', '{2}', {3});\n";
+            var comandos = pilotos.Select(piloto => string.Format(check, piloto.IdPiloto) + string.Format(insert, piloto.IdPiloto, piloto.Nome, piloto.AnoNacimiento, piloto.IdPlaneta));
 
             await Insert(string.Join('\n', comandos));
         }
@@ -24,9 +24,9 @@ namespace ConroleAcesso.Dao
         public async Task RegistrarInicioViagem(int idPiloto, int idNave)
         {
             StringBuilder comando = new StringBuilder();
-            comando.AppendLine($"if (not exists(select 1 from HistoricoViagens where IdPiloto = {idPiloto} and DtChegada is null))");
+            comando.AppendLine($"if (not exists(select 1 from HistoricoViajes where IdPiloto = {idPiloto} and FechaRetorno is null))");
             comando.AppendLine($"begin");
-            comando.AppendLine($"   insert HistoricoViagens (IdNave, IdPiloto, DtSaida) values({idNave}, {idPiloto}, GetDate());");
+            comando.AppendLine($"   insert HistoricoViajes (IdNave, IdPiloto, FechaSalida) values({idNave}, {idPiloto}, GetDate());");
             comando.AppendLine($"end");
 
             await Insert(string.Join('\n', comando.ToString()));
@@ -35,7 +35,7 @@ namespace ConroleAcesso.Dao
         public async Task RegistrarFimViagem(int idPiloto, int idNave)
         {
             StringBuilder comando = new StringBuilder();
-            comando.AppendLine($"update HistoricoViagens set DtChegada = GetDate() where IdPiloto = {idPiloto} and IdNave = {idNave} and DtChegada is null;");
+            comando.AppendLine($"update HistoricoViajes set FechaRetorno = GetDate() where IdPiloto = {idPiloto} and IdNave = {idNave} and FechaRetorno is null;");
 
             await Insert(string.Join('\n', comando.ToString()));
         }
@@ -56,7 +56,7 @@ namespace ConroleAcesso.Dao
         {
             bool viajando = false;
 
-            var comando = $"select convert(bit, case when count(DtSaida) <> count(DtChegada) then 1 else 0 end) Viajando from HistoricoViagens where IdPiloto = {idPiloto}";
+            var comando = $"select convert(bit, case when count(FechaSalida) <> count(FechaRetorno) then 1 else 0 end) Viajando from HistoricoViajes where IdPiloto = {idPiloto}";
 
             await Select(comando, resultadoSQL =>
             {
@@ -75,14 +75,13 @@ namespace ConroleAcesso.Dao
             var comando = @$"
                                 select  t1.IdPiloto,
                                         t1.Nome,
-                                        t1.AnoNascimento,
+                                        t1.AnoNacimiento,
                                         t2.IdPlaneta,
-                                        t2.Nome NomePlaneta,
-                                        t2.Rotacao,
+                                        t2.Rotacion,
                                         t2.Orbita,
                                         t2.Diametro,
                                         t2.Clima,
-                                        t2.Populacao
+                                        t2.Populacion
                                 from    Pilotos t1
                                 inner   join Planetas t2
                                 on      t1.IdPlaneta = t2.IdPlaneta
@@ -96,17 +95,17 @@ namespace ConroleAcesso.Dao
                     {
                         IdPiloto = resultadoSQL.GetValueOrDefault<int>("IdPiloto"),
                         Nome = resultadoSQL.GetValueOrDefault<string>("Nome"),
-                        AnoNascimento = resultadoSQL.GetValueOrDefault<string>("AnoNascimento"),
+                        AnoNacimiento = resultadoSQL.GetValueOrDefault<string>("AnoNacimiento"),
                         IdPlaneta = resultadoSQL.GetValueOrDefault<int>("IdPlaneta"),
                         Planeta = new Planeta
                         {
                             IdPlaneta = resultadoSQL.GetValueOrDefault<int>("IdPlaneta"),
-                            Nome = resultadoSQL.GetValueOrDefault<string>("NomePlaneta"),
-                            Rotacao = resultadoSQL.GetValueOrDefault<double>("Rotacao"),
+                            Nome = resultadoSQL.GetValueOrDefault<string>("Nome"),
+                            Rotacion = resultadoSQL.GetValueOrDefault<double>("Rotacion"),
                             Orbita = resultadoSQL.GetValueOrDefault<double>("Orbita"),
                             Diametro = resultadoSQL.GetValueOrDefault<double>("Diametro"),
                             Clima = resultadoSQL.GetValueOrDefault<string>("Clima"),
-                            Populacao = resultadoSQL.GetValueOrDefault<int>("Populacao")
+                            Populacion = resultadoSQL.GetValueOrDefault<int>("Populacion")
                         }
                     };
                 }
@@ -116,7 +115,7 @@ namespace ConroleAcesso.Dao
             comando = @$"
                                 select  t2.*
                                 from    PilotosNaves t1
-                                inner   join Naves t2
+                                inner join Naves t2
                                 on      t1.IdNave = t2.IdNave
                                 where   t1.FlagAutorizado = 1
                                 and     t1.IdPiloto = {idPiloto}";
@@ -128,11 +127,11 @@ namespace ConroleAcesso.Dao
                     piloto.Naves.Add(new Nave
                     {
                         IdNave = resultadoSQL.GetValueOrDefault<int>("IdNave"),
-                        Nome = resultadoSQL.GetValueOrDefault<string>("Nome"),
+                        Nombre = resultadoSQL.GetValueOrDefault<string>("Nombre"),
                         Modelo = resultadoSQL.GetValueOrDefault<string>("Modelo"),
-                        Passageiros = resultadoSQL.GetValueOrDefault<int>("Passageiros"),
+                        Pasajeros = resultadoSQL.GetValueOrDefault<int>("Pasajeros"),
                         Carga = resultadoSQL.GetValueOrDefault<double>("Carga"),
-                        Classe = resultadoSQL.GetValueOrDefault<string>("Classe")
+                        Clase = resultadoSQL.GetValueOrDefault<string>("Clase")
                     });
                 }
             });

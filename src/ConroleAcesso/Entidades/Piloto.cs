@@ -6,7 +6,7 @@ namespace ConroleAcesso.Entidades
     {
         public int IdPiloto { get; set; }
         public string Nome { get; set; }
-        public string AnoNascimento { get; set; }
+        public string AnoNacimiento { get; set; }
         public int IdPlaneta { get; set; }
 
         //Relacionamentos

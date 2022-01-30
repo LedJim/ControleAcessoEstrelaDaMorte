@@ -46,8 +46,8 @@ namespace ConroleAcesso.Servicos
                 Clima = item.Climate,
                 Diametro = item.Diametro,
                 Orbita = item.Orbita,
-                Rotacao = item.Rotacao,
-                Populacao = item.Populacao
+                Rotacion = item.Rotacao,
+                Populacion = item.Populacao
             }).ToList();
 
             using (var dao = new PlanetaDao())
@@ -69,11 +69,11 @@ namespace ConroleAcesso.Servicos
             var naves = lista.Select(item => new Nave
             {
                 IdNave = item.IdNave,
-                Nome = item.Name,
+                Nombre = item.Name,
                 Carga = item.Carga,
-                Classe = item.Starship_Class,
+                Clase = item.Starship_Class,
                 Modelo = item.Model,
-                Passageiros = item.Passageiros
+                Pasajeros = item.Passageiros
             }).ToList();
 
             using (var dao = new NaveDao())
@@ -96,7 +96,7 @@ namespace ConroleAcesso.Servicos
             {
                 IdPiloto = item.IdPiloto,
                 Nome = item.Name,
-                AnoNascimento = item.Birth_Year,
+                AnoNacimiento = item.Birth_Year,
                 IdPlaneta = item.IdPlaneta,
                 Naves = item.IdNaves.Select(idNave => new Nave
                 {
